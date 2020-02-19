@@ -1,7 +1,7 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
 const dotenv = require('dotenv')
-const Pool = require('pg').Pool
+const Client = require('pg')
 
 dotenv.config()
 
@@ -9,12 +9,9 @@ const {password, host, PORT} = process.env
 
 console.log(password)
 
-const db = new Pool({
-  user: 'postgres',
-  password: process.env.password,
-  host: 'localhost',
-  port: 5432,
-  database: 'donations'
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
 })
 
 const server = express()
