@@ -1,13 +1,11 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
 const dotenv = require('dotenv')
-const Client = require('pg')
+const { Client } = require('pg')
 
 dotenv.config()
 
 const {password, host, PORT} = process.env
-
-console.log(password)
 
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
