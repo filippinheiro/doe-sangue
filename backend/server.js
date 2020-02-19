@@ -1,7 +1,7 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
 const dotenv = require('dotenv')
-const Client = require('pg')
+const Pool = require('pg').Pool
 
 dotenv.config()
 
@@ -9,9 +9,11 @@ const {password, host, PORT} = process.env
 
 console.log(password)
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
+const db = new Pool({
+  user: 'postgres',
+  host: process.env.host,
+  port: 5432,
+  password: process.env.password
 })
 
 const server = express()
@@ -26,7 +28,6 @@ server.use(express.urlencoded({
 }))
 
 server.get('/', (req, res) => {
-  const donors = []
   const query_string = 'SELECT * FROM "donors"'
 
   db.query(query_string, (err, result) => {
