@@ -7,13 +7,12 @@ dotenv.config()
 
 const {password, host, PORT} = process.env
 
-console.log(password)
-
 const db = new Pool({
   user: 'postgres',
-  host: process.env.host,
+  password: process.env.password,
   port: 5432,
-  password: process.env.password
+  host: 'localhost',
+  database: 'donations'
 })
 
 const server = express()
