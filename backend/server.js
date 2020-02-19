@@ -7,10 +7,12 @@ dotenv.config()
 
 const {password, host, PORT} = process.env
 
-const client = new Client({
+const db = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: true,
 })
+
+db.connect()
 
 const server = express()
 nunjucks.configure('./', {
