@@ -7,12 +7,12 @@ dotenv.config()
 
 const {password, host, PORT} = process.env
 
-const db = new Client({
+const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: true,
-})
+});
 
-db.connect()
+client.connect();
 
 const server = express()
 nunjucks.configure('./', {
@@ -26,10 +26,9 @@ server.use(express.urlencoded({
 }))
 
 server.get('/', (req, res) => {
-  const donors = []
   const query_string = 'SELECT * FROM "donors"'
 
-  db.query(query_string, (err, result) => {
+  client.query(query_string, (err, result) => {
     if (err) return res.send(err)
 
     const donors = result.rows
@@ -49,7 +48,7 @@ server.post('/', (req, res) => {
 
   const query_string = `INSERT INTO donors ("name", "email", "blood") VALUES ($1, $2, $3)`
 
-  db.query(query_string, [name, email, blood], err => {
+  client.query(query_string, [name, email, blood], err => {
     if (err) return res.send(err)
 
     return res.redirect('/')
@@ -61,3 +60,5 @@ server.post('/', (req, res) => {
 server.listen(PORT, () => {
   console.log(`Live on PORT ${PORT}`)
 })
+
+client.end()
