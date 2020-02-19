@@ -1,18 +1,19 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
 const dotenv = require('dotenv')
-const { Client } = require('pg')
+const Pool = require('pg').Pool
 
 dotenv.config()
 
 const {password, host, PORT} = process.env
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
-});
-
-client.connect();
+const db = new Pool({
+  user: 'postgres',
+  password: process.env.password,
+  port: 5432,
+  host: 'localhost',
+  database: 'donations'
+})
 
 const server = express()
 nunjucks.configure('./', {
@@ -48,7 +49,7 @@ server.post('/', (req, res) => {
 
   const query_string = `INSERT INTO donors ("name", "email", "blood") VALUES ($1, $2, $3)`
 
-  client.query(query_string, [name, email, blood], err => {
+  db.query(query_string, [name, email, blood], err => {
     if (err) return res.send(err)
 
     return res.redirect('/')
@@ -60,5 +61,3 @@ server.post('/', (req, res) => {
 server.listen(PORT, () => {
   console.log(`Live on PORT ${PORT}`)
 })
-
-client.end()
