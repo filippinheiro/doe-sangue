@@ -29,7 +29,7 @@ server.use(express.urlencoded({
 server.get('/', (req, res) => {
   const query_string = 'SELECT * FROM "donors"'
 
-  db.query(query_string, (err, result) => {
+  client.query(query_string, (err, result) => {
     if (err) return res.send(err)
 
     const donors = result.rows
